@@ -190,14 +190,14 @@ public class Main {
 
         switch (choice) {
             case "a":
-                List<EmailRecipient> allEmails = emailService.getInbox(currentUser.getId());
+                List<Email> allEmails = emailService.getInbox(currentUser.getEmail());
                 if (allEmails.isEmpty()) {
                     System.out.println("No unread emails.");
                 } else {
-                    for (EmailRecipient er : allEmails) {
-                        Email email = er.getEmail();
+                    for (Email er : allEmails) {
+
                         System.out.printf("Code: %s | Subject: %s | From: %s | Date: %s\n",
-                                email.getCode(), email.getSubject(), email.getSender().getEmail(), email.getSentAt());
+                                er.getCode(), er.getSubject(), er.getSender().getEmail(), er.getSentAt());
                     }
                 }
 

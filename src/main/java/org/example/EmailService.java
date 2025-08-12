@@ -75,8 +75,8 @@ public class EmailService {
     }
 
 
-    public List<EmailRecipient> getInbox(int userId) {
-        return emailDao.getAllEmail(userId);
+    public List<Email> getInbox(String userEmail) {
+        return emailDao.getAllEmails(userEmail);
     }
 
     public List<EmailRecipient> getUnreadInbox(int userId) {

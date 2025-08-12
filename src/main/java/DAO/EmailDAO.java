@@ -10,10 +10,7 @@ import Util.HibernateUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.random.RandomGenerator;
 
 import static Util.HibernateUtil.sessionFactory;
@@ -41,20 +38,27 @@ public class EmailDAO {
         }
     }
 
-
-
-
-    public List<EmailRecipient> getAllEmail(int userId) {
+    public List<Email> getAllEmails(String userEmail) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("""
-            FROM EmailRecipient er
-            WHERE er.recipient.id = :userId
-            ORDER BY er.email.sentAt DESC
-            """, EmailRecipient.class)
-                    .setParameter("userId", userId)
+            List<Email> received = session.createQuery(
+                            "SELECT er.email FROM EmailRecipient er " +
+                                    "WHERE er.recipient.email = :email", Email.class)
+                    .setParameter("email", userEmail)
                     .list();
+
+            List<Email> sent = session.createQuery(
+                            "FROM Email e WHERE e.sender.email = :email", Email.class)
+                    .setParameter("email", userEmail)
+                    .list();
+
+            Set<Email> allEmails = new LinkedHashSet<>();
+            allEmails.addAll(received);
+            allEmails.addAll(sent);
+
+            return new ArrayList<>(allEmails);
         }
     }
+
 
 
     public List<EmailRecipient> getUnreadMessages(int userId) {
